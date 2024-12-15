@@ -51,8 +51,6 @@
         devShell = pkgs.mkShell rec {
           nativeBuildInputs = with pkgs; [
             pkg-config
-            gobject-introspection
-            cargo
             cargo-tauri
             nodejs
             nodePackages.pnpm
@@ -61,20 +59,8 @@
             gradle
           ];
 
-          buildInputs = (with pkgs; [
-            at-spi2-atk
-            atkmm
-            cairo
-            gdk-pixbuf
-            glib
-            gtk3
-            harfbuzz
-            librsvg
-            libsoup_3
-            pango
-            webkitgtk_4_1
-            openssl
-          ]) ++ [ androidComposition.androidsdk ];
+          buildInputs = (with pkgs; [ libsoup_3 webkitgtk_4_1 openssl ])
+            ++ [ androidComposition.androidsdk ];
 
           ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
           NDK_HOME = "${ANDROID_HOME}/ndk-bundle";
