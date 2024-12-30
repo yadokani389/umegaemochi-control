@@ -8,6 +8,31 @@
     "main"
   ],
   "permissions": [
-    "barcode-scanner:default"
+    "barcode-scanner:default",
+    "fs:default",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-appcache-read",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-appcache-write",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    }
   ]
 }

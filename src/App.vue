@@ -2,13 +2,14 @@
 import { invoke } from '@tauri-apps/api/core';
 import * as scanner from '@tauri-apps/plugin-barcode-scanner';
 import { ref } from 'vue';
+import { getAddress, saveAddress } from './utils/cache.ts';
 
 type Settings = {
   weather_city_id: String;
   atcoder_id: String;
 };
 
-let address = ref<string>('');
+let address = ref<string>("");
 let settings = ref<Settings>({ weather_city_id: "", atcoder_id: "" });
 
 async function scanQR() {
@@ -31,16 +32,25 @@ async function scanQR() {
 function getSettings() {
   invoke<Settings>('get_settings', { address: address.value }).then((res) => {
     settings.value = res;
+    saveAddress(address.value);
   }).catch((err) => {
     console.error(err);
   });
 }
 
 function postSettings() {
-  invoke<string>('post_settings', { address: address.value, settings: settings.value }).catch((err) => {
+  invoke('post_settings', { address: address.value, settings: settings.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
   });
 }
+
+async function init() {
+  address.value = await getAddress();
+  console.log('Address:', address.value);
+  getSettings();
+}
+
+init();
 </script>
 
 <template>
