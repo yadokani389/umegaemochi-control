@@ -25,3 +25,5 @@ dist-ssr
 
 .envrc
 .direnv
+kls_database.db
+keystore.properties
