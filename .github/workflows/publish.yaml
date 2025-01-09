@@ -2,6 +2,11 @@ name: 'publish'
 
 on:
   workflow_dispatch:
+    inputs:
+      dont_publish:
+        required: false
+        default: true
+        type: boolean
   push:
     branches:
       - release
@@ -32,10 +37,11 @@ jobs:
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
+        if: inputs.dont_publish == false
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
-          asset_name: umegaemochi.apk
+          asset_name: umegaemochi_${{ env.APP_VERSION }}_universal.apk
           tag: v${{ env.APP_VERSION }}
           overwrite: true
           draft: true
