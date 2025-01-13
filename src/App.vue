@@ -9,8 +9,16 @@ type Settings = {
   atcoder_id: String;
 };
 
+type DisasterInfo = {
+  title: String,
+  description: String,
+  warning: String,
+  occurred: Date,
+}
+
 let address = ref<string>("");
 let settings = ref<Settings>({ weather_city_id: "", atcoder_id: "" });
+let disasterInfo = ref<DisasterInfo>({ title: "", description: "", warning: "", occurred: new Date() });
 
 async function scanQR() {
   let permission = await scanner.checkPermissions();
@@ -27,6 +35,8 @@ async function scanQR() {
   console.log('Scanning QR code');
   const scanned = await scanner.scan({ windowed: true, formats: [scanner.Format.QRCode] });
   address.value = scanned.content;
+
+  getSettings();
 }
 
 function getSettings() {
@@ -40,6 +50,12 @@ function getSettings() {
 
 function postSettings() {
   invoke('post_settings', { address: address.value, settings: settings.value }).then(() => saveAddress(address.value)).catch((err) => {
+    console.error(err);
+  });
+}
+
+function postDisasterInfo() {
+  invoke('post_disaster_info', { address: address.value, info: disasterInfo.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
   });
 }
@@ -65,6 +81,12 @@ init();
     <input v-model="settings.atcoder_id" placeholder="AtCoder id" />
     <button @click="postSettings">Post settings</button>
     <div>{{ settings }}</div>
+    <input v-model="disasterInfo.title" placeholder="Title" />
+    <input v-model="disasterInfo.description" placeholder="Description" />
+    <input v-model="disasterInfo.warning" placeholder="Warning" />
+    <input v-model="disasterInfo.occurred" placeholder="Occurred" />
+    <button @click="postDisasterInfo">Post disaster info</button>
+    <div>{{ disasterInfo }}</div>
   </main>
 </template>
 
