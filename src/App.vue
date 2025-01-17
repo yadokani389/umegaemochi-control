@@ -60,6 +60,12 @@ function postDisasterInfo() {
   });
 }
 
+function scroll(name: string) {
+  invoke('scroll', { address: address.value, name }).then(() => saveAddress(address.value)).catch((err) => {
+    console.error(err);
+  });
+}
+
 async function init() {
   address.value = await getAddress();
   console.log('Address:', address.value);
@@ -87,6 +93,8 @@ init();
     <input v-model="disasterInfo.occurred" placeholder="Occurred" />
     <button @click="postDisasterInfo">Post disaster info</button>
     <div>{{ disasterInfo }}</div>
+    <button @click="scroll('next')">Scroll up</button>
+    <button @click="scroll('prev')">Scroll down</button>
   </main>
 </template>
 

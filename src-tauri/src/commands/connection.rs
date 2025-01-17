@@ -58,3 +58,14 @@ pub async fn post_disaster_info(address: String, info: DisasterInfo) -> Result<(
 
     Ok(())
 }
+
+#[tauri::command]
+pub async fn scroll(address: String, name: String) -> Result<(), String> {
+    println!("Connecting to server at {}", address);
+
+    let url = format!("http://{}/scroll/{}", address, name);
+
+    reqwest::get(url).await.map_err(stringify)?;
+
+    Ok(())
+}
