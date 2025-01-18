@@ -41,7 +41,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
-          asset_name: umegaemochi_${{ env.APP_VERSION }}_universal.apk
+          asset_name: umegaemochi-control_${{ env.APP_VERSION }}_universal.apk
           tag: v${{ env.APP_VERSION }}
           overwrite: true
           draft: true
