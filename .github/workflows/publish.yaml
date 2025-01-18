@@ -35,6 +35,12 @@ jobs:
       - name: Get app version
         run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
 
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: apk
+          path: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         if: inputs.dont_publish == false
