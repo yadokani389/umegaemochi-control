@@ -21,6 +21,16 @@ jobs:
 
       - uses: cachix/install-nix-action@v30
 
+      - uses: cachix/cachix-action@v15
+        with:
+          name: yadokani389
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+
       - name: Setup Android signing
         run: |
           cd src-tauri/gen/android
