@@ -2,17 +2,18 @@
 import { invoke } from '@tauri-apps/api/core';
 import * as scanner from '@tauri-apps/plugin-barcode-scanner';
 import { ref } from 'vue';
+import { Button, InputText, FloatLabel, DatePicker } from 'primevue';
 import { getAddress, saveAddress } from './utils/cache.ts';
 
 type Settings = {
-  weather_city_id: String;
-  atcoder_id: String;
+  weather_city_id: string;
+  atcoder_id: string;
 };
 
 type DisasterInfo = {
-  title: String,
-  description: String,
-  warning: String,
+  title: string,
+  description: string,
+  warning: string,
   occurred: Date,
 }
 
@@ -79,22 +80,38 @@ init();
   <main :class="$style.container">
     <h1>Welcome to umegaemochi-control</h1>
 
-    <button @click="scanQR">Scan QR</button>
-    <button @click="scanner.cancel">Cancel QR</button>
-    <button @click="getSettings">Get settings</button>
-    <input v-model="address" placeholder="0.0.0.0:0000" />
-    <input v-model="settings.weather_city_id" placeholder="City id" />
-    <input v-model="settings.atcoder_id" placeholder="AtCoder id" />
-    <button @click="postSettings">Post settings</button>
-    <div>{{ settings }}</div>
-    <input v-model="disasterInfo.title" placeholder="Title" />
-    <input v-model="disasterInfo.description" placeholder="Description" />
-    <input v-model="disasterInfo.warning" placeholder="Warning" />
-    <input v-model="disasterInfo.occurred" placeholder="Occurred" />
-    <button @click="postDisasterInfo">Post disaster info</button>
-    <div>{{ disasterInfo }}</div>
-    <button @click="scroll('next')">Scroll up</button>
-    <button @click="scroll('prev')">Scroll down</button>
+    <Button @click="scanQR">Scan QR</Button>
+    <Button @click="scanner.cancel">Cancel QR</Button>
+    <Button @click="getSettings">Get settings</Button>
+    <FloatLabel variant="on">
+      <InputText v-model="address" />
+      <label>Address</label>
+    </FloatLabel>
+    <FloatLabel variant="on">
+      <InputText v-model="settings.weather_city_id" />
+      <label>City id</label>
+    </FloatLabel>
+    <FloatLabel variant="on">
+      <InputText v-model="settings.atcoder_id" />
+      <label>AtCoder id</label>
+    </FloatLabel>
+    <Button @click="postSettings">Post settings</Button>
+    <FloatLabel variant="on">
+      <InputText v-model="disasterInfo.title" />
+      <label>Title</label>
+    </FloatLabel>
+    <FloatLabel variant="on">
+      <InputText v-model="disasterInfo.description" />
+      <label>Description</label>
+    </FloatLabel>
+    <FloatLabel variant="on">
+      <InputText v-model="disasterInfo.warning" />
+      <label>Warning</label>
+    </FloatLabel>
+    <DatePicker v-model="disasterInfo.occurred" showTime hourFormat="12" fluid date-format="yy/mm/dd"/>
+    <Button @click="postDisasterInfo">Post disaster info</Button>
+    <Button @click="scroll('next')">Scroll up</Button>
+    <Button @click="scroll('prev')">Scroll down</Button>
   </main>
 </template>
 
