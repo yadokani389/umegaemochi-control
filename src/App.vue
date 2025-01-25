@@ -148,6 +148,9 @@ init();
     <Button @click="clearDisasterInfo">Clear disaster info</Button>
     <Button @click="scroll('next')">Scroll up</Button>
     <Button @click="scroll('prev')">Scroll down</Button>
+    <div v-for="(widget, index) in settings.using_widgets" :key="index">
+      <Button @click="scroll(widget)">Scroll to {{ widget }}</Button>
+    </div>
   </main>
 </template>
 
