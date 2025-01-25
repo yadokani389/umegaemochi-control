@@ -2,12 +2,14 @@
 import { invoke } from '@tauri-apps/api/core';
 import * as scanner from '@tauri-apps/plugin-barcode-scanner';
 import { ref } from 'vue';
-import { Button, InputText, FloatLabel, DatePicker } from 'primevue';
+import { Button, InputText, FloatLabel, DatePicker, InputNumber, Listbox } from 'primevue';
 import { getAddress, saveAddress } from './utils/cache.ts';
 
 type Settings = {
   weather_city_id: string;
   atcoder_id: string;
+  widget_interval: number,
+  using_widgets: string[],
 };
 
 type DisasterInfo = {
@@ -17,9 +19,10 @@ type DisasterInfo = {
   occurred: Date,
 }
 
-let address = ref<string>("");
-let settings = ref<Settings>({ weather_city_id: "", atcoder_id: "" });
-let disasterInfo = ref<DisasterInfo>({ title: "", description: "", warning: "", occurred: new Date() });
+const address = ref<string>("");
+const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [] });
+const disasterInfo = ref<DisasterInfo>({ title: "", description: "", warning: "", occurred: new Date() });
+const allWidgets = ref<string[]>([]);
 
 async function scanQR() {
   let permission = await scanner.checkPermissions();
@@ -40,7 +43,16 @@ async function scanQR() {
   getSettings();
 }
 
+function getWidgets() {
+  invoke<string[]>('get_widgets', { address: address.value }).then((res) => {
+    allWidgets.value = res;
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+
 function getSettings() {
+  getWidgets();
   invoke<Settings>('get_settings', { address: address.value }).then((res) => {
     settings.value = res;
     saveAddress(address.value);
@@ -57,6 +69,13 @@ function postSettings() {
 
 function postDisasterInfo() {
   invoke('post_disaster_info', { address: address.value, info: disasterInfo.value }).then(() => saveAddress(address.value)).catch((err) => {
+    console.error(err);
+  });
+}
+
+function clearDisasterInfo() {
+  disasterInfo.value = { title: "", description: "", warning: "", occurred: new Date() };
+  invoke('clear_disaster_info', { address: address.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
   });
 }
@@ -83,33 +102,50 @@ init();
     <Button @click="scanQR">Scan QR</Button>
     <Button @click="scanner.cancel">Cancel QR</Button>
     <Button @click="getSettings">Get settings</Button>
+
     <FloatLabel variant="on">
       <InputText v-model="address" />
       <label>Address</label>
     </FloatLabel>
+
     <FloatLabel variant="on">
       <InputText v-model="settings.weather_city_id" />
       <label>City id</label>
     </FloatLabel>
+
     <FloatLabel variant="on">
       <InputText v-model="settings.atcoder_id" />
       <label>AtCoder id</label>
     </FloatLabel>
+
+    <FloatLabel variant="on">
+      <InputNumber v-model="settings.widget_interval" />
+      <label>Widget interval</label>
+    </FloatLabel>
+
+    <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
+
     <Button @click="postSettings">Post settings</Button>
+
     <FloatLabel variant="on">
       <InputText v-model="disasterInfo.title" />
       <label>Title</label>
     </FloatLabel>
+
     <FloatLabel variant="on">
       <InputText v-model="disasterInfo.description" />
       <label>Description</label>
     </FloatLabel>
+
     <FloatLabel variant="on">
       <InputText v-model="disasterInfo.warning" />
       <label>Warning</label>
     </FloatLabel>
-    <DatePicker v-model="disasterInfo.occurred" showTime hourFormat="12" fluid date-format="yy/mm/dd"/>
+
+    <DatePicker v-model="disasterInfo.occurred" showTime hourFormat="12" fluid date-format="yy/mm/dd" />
+
     <Button @click="postDisasterInfo">Post disaster info</Button>
+    <Button @click="clearDisasterInfo">Clear disaster info</Button>
     <Button @click="scroll('next')">Scroll up</Button>
     <Button @click="scroll('prev')">Scroll down</Button>
   </main>
