@@ -2,8 +2,10 @@
 import { invoke } from '@tauri-apps/api/core';
 import * as scanner from '@tauri-apps/plugin-barcode-scanner';
 import { ref } from 'vue';
-import { Button, InputText, FloatLabel, DatePicker, InputNumber, Listbox } from 'primevue';
+import { Button, InputText, FloatLabel, DatePicker, InputNumber, Listbox, useToast, Toast } from 'primevue';
 import { getAddress, saveAddress } from './utils/cache.ts';
+
+const toast = useToast();
 
 type Settings = {
   weather_city_id: string;
@@ -33,6 +35,7 @@ async function scanQR() {
 
   if (permission == 'denied') {
     console.error('Permission denied');
+    toast.add({ severity: 'error', summary: 'Permission denied', detail: 'Camera permission was denied. Please check your settings.', life: 3000 });
     return;
   }
 
@@ -48,6 +51,7 @@ function getWidgets() {
     allWidgets.value = res;
   }).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to get widgets', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
@@ -58,18 +62,21 @@ function getSettings() {
     saveAddress(address.value);
   }).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to get settings', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
 function postSettings() {
   invoke('post_settings', { address: address.value, settings: settings.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to post settings', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
 function postDisasterInfo() {
   invoke('post_disaster_info', { address: address.value, info: disasterInfo.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to post disaster info', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
@@ -77,12 +84,14 @@ function clearDisasterInfo() {
   disasterInfo.value = { title: "", description: "", warning: "", occurred: new Date() };
   invoke('clear_disaster_info', { address: address.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to clear disaster info', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
 function scroll(name: string) {
   invoke('scroll', { address: address.value, name }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
+    toast.add({ severity: 'error', summary: 'Failed to scroll', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
   });
 }
 
@@ -98,6 +107,8 @@ init();
 <template>
   <main :class="$style.container">
     <h1>Welcome to umegaemochi-control</h1>
+
+    <Toast />
 
     <Button @click="scanQR">Scan QR</Button>
     <Button @click="scanner.cancel">Cancel QR</Button>
