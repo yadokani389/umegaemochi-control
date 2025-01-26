@@ -2,7 +2,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import * as scanner from '@tauri-apps/plugin-barcode-scanner';
 import { ref } from 'vue';
-import { Button, InputText, FloatLabel, DatePicker, InputNumber, Listbox, useToast, Toast } from 'primevue';
+import { Button, InputText, FloatLabel, DatePicker, InputNumber, Listbox, useToast, Toast, Fieldset } from 'primevue';
 import { getAddress, saveAddress } from './utils/cache.ts';
 
 const toast = useToast();
@@ -110,68 +110,87 @@ init();
 
     <Toast />
 
-    <Button @click="scanQR">Scan QR</Button>
-    <Button @click="scanner.cancel">Cancel QR</Button>
-    <Button @click="getSettings">Get settings</Button>
+    <Fieldset legend="Scanner" :class="$style.container">
+      <Button @click="scanQR">Scan QR</Button>
+      <Button @click="scanner.cancel">Cancel QR</Button>
+    </Fieldset>
 
-    <FloatLabel variant="on">
-      <InputText v-model="address" />
-      <label>Address</label>
-    </FloatLabel>
+    <Fieldset legend="Settings">
+      <div :class="$style.container">
+        <Button @click="getSettings">Get settings</Button>
 
-    <FloatLabel variant="on">
-      <InputText v-model="settings.weather_city_id" />
-      <label>City id</label>
-    </FloatLabel>
+        <FloatLabel variant="on">
+          <InputText v-model="address" />
+          <label>Address</label>
+        </FloatLabel>
 
-    <FloatLabel variant="on">
-      <InputText v-model="settings.atcoder_id" />
-      <label>AtCoder id</label>
-    </FloatLabel>
+        <FloatLabel variant="on">
+          <InputText v-model="settings.weather_city_id" />
+          <label>City id</label>
+        </FloatLabel>
 
-    <FloatLabel variant="on">
-      <InputNumber v-model="settings.widget_interval" />
-      <label>Widget interval</label>
-    </FloatLabel>
+        <FloatLabel variant="on">
+          <InputText v-model="settings.atcoder_id" />
+          <label>AtCoder id</label>
+        </FloatLabel>
 
-    <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
+        <FloatLabel variant="on">
+          <InputNumber v-model="settings.widget_interval" />
+          <label>Widget interval</label>
+        </FloatLabel>
 
-    <Button @click="postSettings">Post settings</Button>
+        <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
 
-    <FloatLabel variant="on">
-      <InputText v-model="disasterInfo.title" />
-      <label>Title</label>
-    </FloatLabel>
+        <Button @click="postSettings">Post settings</Button>
+      </div>
+    </Fieldset>
 
-    <FloatLabel variant="on">
-      <InputText v-model="disasterInfo.description" />
-      <label>Description</label>
-    </FloatLabel>
+    <Fieldset legend="Disaster info">
+      <div :class="$style.container">
+        <FloatLabel variant="on">
+          <InputText v-model="disasterInfo.title" />
+          <label>Title</label>
+        </FloatLabel>
 
-    <FloatLabel variant="on">
-      <InputText v-model="disasterInfo.warning" />
-      <label>Warning</label>
-    </FloatLabel>
+        <FloatLabel variant="on">
+          <InputText v-model="disasterInfo.description" />
+          <label>Description</label>
+        </FloatLabel>
 
-    <DatePicker v-model="disasterInfo.occurred" showTime hourFormat="12" fluid date-format="yy/mm/dd" />
+        <FloatLabel variant="on">
+          <InputText v-model="disasterInfo.warning" />
+          <label>Warning</label>
+        </FloatLabel>
 
-    <Button @click="postDisasterInfo">Post disaster info</Button>
-    <Button @click="clearDisasterInfo">Clear disaster info</Button>
-    <Button @click="scroll('next')">Scroll up</Button>
-    <Button @click="scroll('prev')">Scroll down</Button>
-    <div v-for="(widget, index) in settings.using_widgets" :key="index">
-      <Button @click="scroll(widget)">Scroll to {{ widget }}</Button>
-    </div>
+        <DatePicker v-model="disasterInfo.occurred" showTime hourFormat="12" fluid date-format="yy/mm/dd" />
+
+        <Button @click="postDisasterInfo">Post disaster info</Button>
+        <Button @click="clearDisasterInfo">Clear disaster info</Button>
+      </div>
+    </Fieldset>
+
+    <Fieldset legend="Scroll">
+      <div :class="$style.container">
+        <Button @click="scroll('next')">Scroll up</Button>
+        <Button @click="scroll('prev')">Scroll down</Button>
+        <div v-for="(widget, index) in settings.using_widgets" :key="index">
+          <Button @click="scroll(widget)">Scroll to {{ widget }}</Button>
+        </div>
+      </div>
+    </Fieldset>
   </main>
 </template>
 
 <style module>
 .container {
-  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.container>* {
+  margin: 5px;
 }
 </style>
