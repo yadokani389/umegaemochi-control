@@ -6,6 +6,31 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    "fs:default",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-appcache-read",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-appcache-write",
+      "allow": [
+        {
+          "path": "$APPCACHE/*"
+        }
+      ]
+    }
   ]
 }

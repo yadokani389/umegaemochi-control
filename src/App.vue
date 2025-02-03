@@ -6,9 +6,11 @@ import FieldScanner from './components/FieldScanner.vue';
 import FieldSettings from './components/FieldSettings.vue';
 import FieldDisasterInfo from './components/FieldDisasterInfo.vue';
 import FieldScroll from './components/FieldScroll.vue';
+import { type } from '@tauri-apps/plugin-os';
 
 const address = ref<string>("");
 const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [] });
+const osType = type();
 </script>
 
 <template>
@@ -17,7 +19,7 @@ const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_int
 
     <Toast />
 
-    <FieldScanner v-model:address="address" />
+    <FieldScanner v-model:address="address" v-if="['ios', 'android'].includes(osType)" />
 
     <FieldSettings v-model:address="address" v-model:settings="settings" />
 

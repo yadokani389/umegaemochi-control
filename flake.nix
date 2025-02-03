@@ -1,6 +1,8 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    old-nixpkgs.url =
+      "github:NixOS/nixpkgs/0c19708cf035f50d28eb4b2b8e7a79d4dc52f6bb";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -8,12 +10,17 @@
     };
   };
 
-  outputs = { nixpkgs, flake-utils, rust-overlay, ... }:
+  outputs = { nixpkgs, old-nixpkgs, flake-utils, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ rust-overlay.overlays.default ];
+          overlays = [
+            (final: prev: {
+              inherit (old-nixpkgs.legacyPackages.${system}) webkitgtk_4_1;
+            })
+            rust-overlay.overlays.default
+          ];
           config = {
             allowUnfree = true;
             android_sdk.accept_license = true;
@@ -49,20 +56,19 @@
           includeExtras = [ "extras;google;gcm" ];
         };
 
-      in {
-        devShell = pkgs.mkShell rec {
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-            cargo-tauri
-            nodejs
-            nodePackages.pnpm
-            rust-toolchain
-            jdk17
-            gradle
-          ];
+      in rec {
+        packages.default = pkgs.callPackage ./package.nix { };
+        devShells.default = pkgs.mkShell {
+          inherit (packages.default) buildInputs;
+          nativeBuildInputs = packages.default.nativeBuildInputs
+            ++ (with pkgs; [ rustc gcc rustfmt clippy ]);
+        };
 
-          buildInputs = (with pkgs; [ libsoup_3 webkitgtk_4_1 openssl ])
-            ++ [ androidComposition.androidsdk ];
+        devShells.android = pkgs.mkShell rec {
+          inherit (packages.default) buildInputs;
+          nativeBuildInputs = packages.default.nativeBuildInputs
+            ++ [ rust-toolchain androidComposition.androidsdk ]
+            ++ (with pkgs; [ jdk17 gradle ]);
 
           ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
           NDK_HOME = "${ANDROID_HOME}/ndk-bundle";

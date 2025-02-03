@@ -8,8 +8,15 @@ use commands::connection::{
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_barcode_scanner::init())
+        .setup(|app| {
+            #[cfg(mobile)]
+            app.handle()
+                .plugin(tauri_plugin_barcode_scanner::init())
+                .unwrap();
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             get_settings,
             post_settings,
