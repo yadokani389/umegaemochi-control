@@ -14,31 +14,32 @@ const osType = type();
 </script>
 
 <template>
-  <main :class="$style.container">
-    <h1>Welcome to umegaemochi-control</h1>
-
+  <main :class="$style.main">
     <Toast />
+    <h1>Welcome to umegaemochi-control</h1>
+    <div :class="$style.container">
+      <FieldScanner v-model:address="address" v-if="['ios', 'android'].includes(osType)" />
 
-    <FieldScanner v-model:address="address" v-if="['ios', 'android'].includes(osType)" />
+      <FieldSettings v-model:address="address" v-model:settings="settings" />
 
-    <FieldSettings v-model:address="address" v-model:settings="settings" />
+      <FieldDisasterInfo :address="address" />
 
-    <FieldDisasterInfo :address="address" />
-
-    <FieldScroll :address="address" :settings="settings" />
+      <FieldScroll :address="address" :settings="settings" />
+    </div>
   </main>
 </template>
 
 <style module>
-.container {
-  height: 100%;
+.main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
-.container>* {
-  margin: 5px;
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 </style>
