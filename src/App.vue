@@ -11,6 +11,7 @@ import { type } from '@tauri-apps/plugin-os';
 const address = ref<string>("");
 const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [] });
 const osType = type();
+const version = __APP_VERSION__;
 </script>
 
 <template>
@@ -26,6 +27,7 @@ const osType = type();
 
       <FieldScroll :address="address" :settings="settings" />
     </div>
+    <div>Version: v{{ version }}</div>
   </main>
 </template>
 
