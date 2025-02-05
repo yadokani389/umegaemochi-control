@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core';
 import { ref } from 'vue';
-import { Button, InputText, InputNumber, FloatLabel, Fieldset, Listbox, useToast } from 'primevue';
+import { Button, InputText, InputNumber, FloatLabel, Fieldset, Listbox, ToggleButton, useToast } from 'primevue';
 import { Settings } from '../types.ts';
 import { getAddress, saveAddress } from '../utils/cache.ts';
 import { sleep } from '../utils/misc.ts';
@@ -85,6 +85,9 @@ init();
       </FloatLabel>
 
       <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
+
+      <ToggleButton v-model="settings.auto_fullscreen" onLabel="Enabled Auto fullscreen"
+        offLabel="Disabled Auto fullscreen" />
 
       <Button @click="postSettings">Post settings</Button>
     </div>

@@ -9,7 +9,7 @@ import FieldScroll from './components/FieldScroll.vue';
 import { type } from '@tauri-apps/plugin-os';
 
 const address = ref<string>("");
-const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [] });
+const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [], auto_fullscreen: false });
 const osType = type();
 const version = __APP_VERSION__;
 </script>

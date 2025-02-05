@@ -4,4 +4,5 @@ pub struct Settings {
     atcoder_id: String,
     widget_interval: u64,
     using_widgets: Vec<String>,
+    auto_fullscreen: bool,
 }
