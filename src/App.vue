@@ -6,6 +6,7 @@ import FieldScanner from './components/FieldScanner.vue';
 import FieldSettings from './components/FieldSettings.vue';
 import FieldDisasterInfo from './components/FieldDisasterInfo.vue';
 import FieldScroll from './components/FieldScroll.vue';
+import FieldTodo from './components/FieldTodo.vue';
 import { type } from '@tauri-apps/plugin-os';
 
 const address = ref<string>("");
@@ -26,6 +27,8 @@ const version = __APP_VERSION__;
       <FieldDisasterInfo :address="address" />
 
       <FieldScroll :address="address" :settings="settings" />
+
+      <FieldTodo :address="address" />
     </div>
     <div>Version: v{{ version }}</div>
   </main>

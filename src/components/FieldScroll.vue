@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { Button, Fieldset, useToast } from 'primevue';
 import { Settings } from '../types';
 import { saveAddress } from '../utils/cache';
+import { addToast } from '../utils/misc';
 
 const props = defineProps<{ address: string, settings: Settings }>();
 const toast = useToast();
@@ -10,7 +11,7 @@ const toast = useToast();
 function scroll(name: string) {
   invoke('scroll', { address: props.address, name }).then(() => saveAddress(props.address)).catch((err) => {
     console.error(err);
-    toast.add({ severity: 'error', summary: 'Failed to scroll', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
+    addToast(toast, 'error', 'Failed to scroll', err);
   });
 }
 </script>

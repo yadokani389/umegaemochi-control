@@ -2,7 +2,8 @@ mod commands;
 mod settings;
 
 use commands::connection::{
-    clear_disaster_info, get_settings, get_widgets, post_disaster_info, post_settings, scroll,
+    clear_disaster_info, create_todo, delete_todo, get_settings, get_todos, get_widgets,
+    post_disaster_info, post_settings, scroll, update_todo,
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -23,7 +24,11 @@ pub fn run() {
             post_disaster_info,
             clear_disaster_info,
             scroll,
-            get_widgets
+            get_widgets,
+            get_todos,
+            create_todo,
+            delete_todo,
+            update_todo
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

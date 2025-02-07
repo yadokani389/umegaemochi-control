@@ -96,3 +96,105 @@ pub async fn get_widgets(address: String) -> Result<Vec<String>, String> {
 
     Ok(res)
 }
+
+#[derive(Debug, Clone, Default, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct Todo {
+    pub id: uuid::Uuid,
+    pub text: String,
+    pub completed: bool,
+}
+
+#[tauri::command]
+pub async fn get_todos(address: String) -> Result<Vec<Todo>, String> {
+    let url = format!("http://{}/todos", address);
+
+    println!("Connecting to {}", url);
+
+    let res = reqwest::get(url)
+        .await
+        .map_err(stringify)?
+        .json::<std::collections::HashMap<uuid::Uuid, Todo>>()
+        .await
+        .map_err(stringify)?
+        .values()
+        .cloned()
+        .collect();
+
+    Ok(res)
+}
+
+#[derive(Debug, serde::Serialize)]
+struct CreateTodo {
+    text: String,
+}
+
+#[tauri::command]
+pub async fn create_todo(address: &str, text: String) -> Result<Todo, String> {
+    let url = format!("http://{}/todos", address);
+
+    println!("Connecting to {}", url);
+
+    let new_todo = CreateTodo { text };
+
+    let res = reqwest::Client::new()
+        .post(&url)
+        .json(&new_todo)
+        .send()
+        .await
+        .map_err(stringify)?
+        .json::<Todo>()
+        .await
+        .map_err(stringify)?;
+
+    Ok(res)
+}
+
+#[derive(Debug, serde::Serialize)]
+struct UpdateTodo {
+    text: Option<String>,
+    completed: Option<bool>,
+}
+
+#[tauri::command]
+pub async fn update_todo(
+    address: &str,
+    id: uuid::Uuid,
+    text: Option<String>,
+    completed: Option<bool>,
+) -> Result<Todo, String> {
+    let url = format!("http://{}/todos/{}", address, id);
+
+    println!("Connecting to {}", url);
+
+    let update = UpdateTodo { text, completed };
+
+    let res = reqwest::Client::new()
+        .patch(&url)
+        .json(&update)
+        .send()
+        .await
+        .map_err(stringify)?
+        .json::<Todo>()
+        .await
+        .map_err(stringify)?;
+
+    Ok(res)
+}
+
+#[tauri::command]
+pub async fn delete_todo(address: &str, id: uuid::Uuid) -> Result<Todo, String> {
+    let url = format!("http://{}/todos/{}", address, id);
+
+    println!("Connecting to {}", url);
+
+    let res = reqwest::Client::new()
+        .delete(&url)
+        .send()
+        .await
+        .map_err(stringify)?
+        .json::<Todo>()
+        .await
+        .map_err(stringify)?;
+
+    Ok(res)
+}

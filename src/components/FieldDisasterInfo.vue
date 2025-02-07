@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { ref } from 'vue';
 import { Button, InputText, FloatLabel, DatePicker, Fieldset, useToast } from 'primevue';
 import { saveAddress } from '../utils/cache';
+import { addToast } from '../utils/misc';
 
 type DisasterInfo = {
   title: string,
@@ -18,7 +19,7 @@ const toast = useToast();
 function postDisasterInfo() {
   invoke('post_disaster_info', { address: props.address, info: disasterInfo.value }).then(() => saveAddress(props.address)).catch((err) => {
     console.error(err);
-    toast.add({ severity: 'error', summary: 'Failed to post disaster info', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
+    addToast(toast, 'error', 'Failed to post disaster info', err);
   });
 }
 
@@ -26,7 +27,7 @@ function clearDisasterInfo() {
   disasterInfo.value = { title: "", description: "", warning: "", occurred: new Date() };
   invoke('clear_disaster_info', { address: props.address }).then(() => saveAddress(props.address)).catch((err) => {
     console.error(err);
-    toast.add({ severity: 'error', summary: 'Failed to clear disaster info', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
+    addToast(toast, 'error', 'Failed to clear disaster info', err);
   });
 }
 </script>

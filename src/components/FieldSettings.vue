@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { Button, InputText, InputNumber, FloatLabel, Fieldset, Listbox, ToggleButton, useToast } from 'primevue';
 import { Settings } from '../types.ts';
 import { getAddress, saveAddress } from '../utils/cache.ts';
-import { sleep } from '../utils/misc.ts';
+import { addToast, sleep } from '../utils/misc.ts';
 
 const address = defineModel<string>('address', { required: true });
 const settings = defineModel<Settings>('settings', { required: true });
@@ -17,12 +17,7 @@ function getWidgets() {
     allWidgets.value = res;
   }).catch((err) => {
     console.error(err);
-    toast.add({
-      severity: "error",
-      summary: "Failed to get widgets",
-      detail: err + "\nMake sure both apps are the latest.",
-      life: 3000,
-    });
+    addToast(toast, 'error', 'Failed to get widgets', err);
   });
 }
 
@@ -33,19 +28,14 @@ function getSettings() {
     saveAddress(address.value);
   }).catch((err) => {
     console.error(err);
-    toast.add({
-      severity: "error",
-      summary: "Failed to get settings",
-      detail: err + "\nMake sure both apps are the latest.",
-      life: 3000,
-    });
+    addToast(toast, 'error', 'Failed to get settings', err);
   });
 }
 
 function postSettings() {
   invoke('post_settings', { address: address.value, settings: settings.value }).then(() => saveAddress(address.value)).catch((err) => {
     console.error(err);
-    toast.add({ severity: 'error', summary: 'Failed to post settings', detail: err + '\nMake sure both apps are the latest.', life: 3000 });
+    addToast(toast, 'error', 'Failed to post settings', err);
   });
 }
 
