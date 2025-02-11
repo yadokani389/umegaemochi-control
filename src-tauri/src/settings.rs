@@ -5,4 +5,5 @@ pub struct Settings {
     widget_interval: u64,
     using_widgets: Vec<String>,
     auto_fullscreen: bool,
+    using_sports_news: Vec<String>,
 }

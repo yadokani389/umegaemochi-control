@@ -29,6 +29,8 @@ pub fn run() {
             create_todo,
             delete_todo,
             update_todo
+            get_widgets,
+            get_sports_news,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

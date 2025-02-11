@@ -9,6 +9,7 @@ import { addToast, sleep } from '../utils/misc.ts';
 const address = defineModel<string>('address', { required: true });
 const settings = defineModel<Settings>('settings', { required: true });
 const allWidgets = ref<string[]>([]);
+const sportsTopics = ref<string[]>([]);
 
 const toast = useToast();
 
@@ -21,8 +22,23 @@ function getWidgets() {
   });
 }
 
+function getSportsNews() {
+  invoke<string[]>("get_sports_news", { address: address.value }).then((res) => {
+    sportsTopics.value = res;
+  }).catch((err) => {
+    console.error(err);
+    toast.add({
+      severity: "error",
+      summary: "Failed to get sports news topics",
+      detail: err + "\nMake sure both apps are the latest.",
+      life: 3000,
+    });
+  });
+}
+
 function getSettings() {
   getWidgets();
+  getSportsNews();
   invoke<Settings>("get_settings", { address: address.value }).then((res) => {
     settings.value = res;
     saveAddress(address.value);
@@ -75,7 +91,7 @@ init();
       </FloatLabel>
 
       <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
-
+      <Listbox v-model="settings.using_sports_news" :options="sportsTopics" multiple checkmark />
       <ToggleButton v-model="settings.auto_fullscreen" onLabel="Enabled Auto fullscreen"
         offLabel="Disabled Auto fullscreen" />
 

@@ -198,3 +198,18 @@ pub async fn delete_todo(address: &str, id: uuid::Uuid) -> Result<Todo, String> 
 
     Ok(res)
 }
+
+#[tauri::command]
+pub async fn get_sports_news(address: String) -> Result<Vec<String>, String> {
+    let url = format!("http://{}/sports_news", address);
+
+    println!("Connecting to {}", url);
+
+    let res = reqwest::get(url)
+        .await
+        .map_err(stringify)?
+        .json::<Vec<String>>()
+        .await
+        .map_err(stringify)?;
+    Ok(res)
+}
