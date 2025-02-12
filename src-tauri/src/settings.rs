@@ -6,4 +6,5 @@ pub struct Settings {
     using_widgets: Vec<String>,
     auto_fullscreen: bool,
     using_sports_news: Vec<String>,
+    auto_hide_cursor: bool,
 }
