@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core';
-import { Button, Fieldset, useToast } from 'primevue';
+import { Button, Fieldset, Select, useToast } from 'primevue';
 import { Settings } from '../types';
 import { saveAddress } from '../utils/cache';
 import { addToast } from '../utils/misc';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{ address: string, settings: Settings }>();
 const toast = useToast();
+const selectedWidget = ref<string>('');
 
 function scroll(name: string) {
   invoke('scroll', { address: props.address, name }).then(() => saveAddress(props.address)).catch((err) => {
@@ -14,6 +16,16 @@ function scroll(name: string) {
     addToast(toast, 'error', 'Failed to scroll', err);
   });
 }
+
+watch(selectedWidget, (value) => {
+  if (value) {
+    invoke('scroll', { address: props.address, name: value }).then(() => saveAddress(props.address)).catch((err) => {
+      console.error(err);
+      addToast(toast, 'error', 'Failed to scroll', err);
+    });
+    selectedWidget.value = '';
+  }
+});
 </script>
 
 <template>
@@ -21,9 +33,7 @@ function scroll(name: string) {
     <div :class="$style.container">
       <Button @click="scroll('next')">Scroll up</Button>
       <Button @click="scroll('prev')">Scroll down</Button>
-      <div v-for="(widget, index) in settings.using_widgets" :key="index">
-        <Button @click="scroll(widget)">Scroll to {{ widget }}</Button>
-      </div>
+      <Select v-model="selectedWidget" :options="settings.using_widgets" placeholder="Scroll to" />
     </div>
   </Fieldset>
 </template>
