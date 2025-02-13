@@ -8,11 +8,11 @@ const toast = useToast();
 async function scanQR() {
   let permission = await scanner.checkPermissions();
   console.log('Permission:', permission);
-  if (permission == 'prompt') {
+  if (permission !== 'granted') {
     permission = await scanner.requestPermissions();
   }
 
-  if (permission == 'denied') {
+  if (permission === 'denied') {
     console.error('Permission denied');
     toast.add({ severity: 'error', summary: 'Permission denied', detail: 'Camera permission was denied. Please check your settings.', life: 3000 });
     return;
