@@ -1,6 +1,6 @@
 [package]
 name = "umegaemochi-control"
-version = "0.5.0"
+version = "0.6.0"
 description = "A Tauri App"
 authors = ["yadokani389"]
 edition = "2021"
