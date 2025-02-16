@@ -90,6 +90,9 @@ init();
         <label>Widget interval</label>
       </FloatLabel>
 
+      <ToggleButton v-model="settings.using_sound_when_disaster" onLabel="Enabled sound when disaster"
+        offLabel="Disabled sound when disaster" />
+
       <Listbox v-model="settings.using_widgets" :options="allWidgets" multiple checkmark />
       <Listbox v-model="settings.using_sports_news" :options="sportsTopics" multiple checkmark />
 

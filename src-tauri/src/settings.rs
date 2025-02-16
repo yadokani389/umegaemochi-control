@@ -7,4 +7,5 @@ pub struct Settings {
     auto_fullscreen: bool,
     using_sports_news: Vec<String>,
     auto_hide_cursor: bool,
+    using_sound_when_disaster: bool,
 }
