@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/core';
-import { ref } from 'vue';
-import { Button, InputText, InputNumber, FloatLabel, Fieldset, Listbox, ToggleButton, useToast } from 'primevue';
+import { ref, computed } from 'vue';
+import { Button, InputText, InputNumber, FloatLabel, Fieldset, Listbox, ToggleButton, DatePicker, useToast } from 'primevue';
 import { Settings } from '../types.ts';
 import { getAddress, saveAddress } from '../utils/cache.ts';
 import { addToast, sleep } from '../utils/misc.ts';
@@ -55,6 +55,30 @@ function postSettings() {
   });
 }
 
+const nightmodeStart = computed({
+  get() {
+    let [hour, minute] = settings.value.nightmode_range.start.split(':');
+    return new Date(0, 0, 0, parseInt(hour), parseInt(minute));
+  },
+  set(newVal: Date) {
+    let hour = newVal.getHours().toString().padStart(2, '0');
+    let minute = newVal.getMinutes().toString().padStart(2, '0');
+    settings.value.nightmode_range.start = `${hour}:${minute}`;
+  }
+});
+
+const nightmodeEnd = computed({
+  get() {
+    let [hour, minute] = settings.value.nightmode_range.end.split(':');
+    return new Date(0, 0, 0, parseInt(hour), parseInt(minute));
+  },
+  set(newVal: Date) {
+    let hour = newVal.getHours().toString().padStart(2, '0');
+    let minute = newVal.getMinutes().toString().padStart(2, '0');
+    settings.value.nightmode_range.end = `${hour}:${minute}`;
+  }
+});
+
 async function init() {
   address.value = await getAddress();
   await sleep(1000);
@@ -100,6 +124,15 @@ init();
         offLabel="Disabled Auto fullscreen" />
       <ToggleButton v-model="settings.auto_hide_cursor" onLabel="Enabled Auto hide cursor"
         offLabel="Disabled Auto hide cursor" />
+
+      <FloatLabel variant="on">
+        <DatePicker v-model="nightmodeStart" timeOnly hourFormat="24" fluid />
+        <label>Nightmode start</label>
+      </FloatLabel>
+      <FloatLabel variant="on">
+        <DatePicker v-model="nightmodeEnd" timeOnly hourFormat="24" fluid />
+        <label>Nightmode end</label>
+      </FloatLabel>
 
       <Button @click="postSettings">Post settings</Button>
     </div>
