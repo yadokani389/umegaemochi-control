@@ -10,7 +10,7 @@ import FieldTodo from './components/FieldTodo.vue';
 import { type } from '@tauri-apps/plugin-os';
 
 const address = ref<string>("");
-const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [], auto_fullscreen: false, auto_hide_cursor: false, using_sports_news: [] });
+const settings = ref<Settings>({ weather_city_id: "", atcoder_id: "", widget_interval: 0, using_widgets: [], auto_fullscreen: false, auto_hide_cursor: false, using_sports_news: [], nightmode_range: { start: "22:00:00", end: "06:30:00" } });
 const osType = type();
 const version = __APP_VERSION__;
 </script>

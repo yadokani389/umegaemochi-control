@@ -7,4 +7,11 @@ pub struct Settings {
     auto_fullscreen: bool,
     using_sports_news: Vec<String>,
     auto_hide_cursor: bool,
+    nightmode_range: NightmodeRange,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+struct NightmodeRange {
+    start: chrono::NaiveTime,
+    end: chrono::NaiveTime,
 }

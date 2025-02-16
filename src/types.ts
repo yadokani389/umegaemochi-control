@@ -6,4 +6,10 @@ export type Settings = {
   auto_fullscreen: boolean;
   auto_hide_cursor: boolean;
   using_sports_news: string[];
+  nightmode_range: NightmodeRange;
+};
+
+type NightmodeRange = {
+  start: string;
+  end: string;
 };
