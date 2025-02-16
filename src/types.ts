@@ -7,6 +7,7 @@ export type Settings = {
   auto_hide_cursor: boolean;
   using_sports_news: string[];
   nightmode_range: NightmodeRange;
+  use_sound_when_disaster: boolean;
 };
 
 type NightmodeRange = {

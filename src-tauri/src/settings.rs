@@ -8,6 +8,7 @@ pub struct Settings {
     using_sports_news: Vec<String>,
     auto_hide_cursor: bool,
     nightmode_range: NightmodeRange,
+    use_sound_when_disaster: bool,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
